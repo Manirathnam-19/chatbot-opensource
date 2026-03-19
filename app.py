@@ -29,7 +29,7 @@ uploaded_file = st.file_uploader("Upload LMS Guide (PDF)", type=["pdf"])
 
 # Ask user name for session-based memory
 if "session_id" not in st.session_state:
-    st.session_state.session_id = st.text_input("E nter your name:", value="guest", key="username_input")
+    st.session_state.session_id = st.text_input("Enter your name:", value="guest", key="username_input")
 
 # Function to return SQLite-backed message history
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
@@ -65,7 +65,7 @@ if uploaded_file:
         # 1. Load and split PDF
         loader = PyPDFLoader(temp_path)
         docs = loader.load()
-        splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=80)
+        splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=80, max_history=4, temparature=0)
         chunks = splitter.split_documents(docs) 
 
         # 2. Embed & index chunks
@@ -141,7 +141,7 @@ if uploaded_file:
                      )
                     answer = result["answer"]
                 except Exception as e:
-                    answer = "The assistant is temporarily unavilvle. Please try again later."
+                    answer = "The assistant is temporarily unavailable. Please try again later."
                     print(f"error during qa.invoke: {e}")
                 with st.chat_message("assistant"):
                     st.markdown(answer)
